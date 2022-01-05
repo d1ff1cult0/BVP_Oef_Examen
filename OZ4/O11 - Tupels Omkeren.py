@@ -6,11 +6,7 @@ fouten, aan jou om deze te vinden en te corrigeren.
 
 
 def reverse_tuple(tuple):
-    if len(tuple) == 1:
-        return tuple
-    else:
-        reversed_tuple = tuple[0] + reverse_tuple(tuple)
-        return reversed_tuple
+    return tuple[::-1]
 
 
 assert reverse_tuple(()) == ()

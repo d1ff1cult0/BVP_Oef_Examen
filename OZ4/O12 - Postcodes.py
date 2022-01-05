@@ -21,3 +21,45 @@ om alles samen te brengen. Deze functie krijgt als argument een postcode en
 genereert een barcode voor de vijf cijfers én voor het controlecijfer. Tussen de
 barcodes van de verschillende cijfers staat steeds een spatie.
 """
+
+
+def controlecijfer(postcode):
+    som = 0
+    for digit in str(postcode):
+        som += int(digit)
+    return 10 - int(str(som)[-1])
+
+
+def cijfer_naar_barcode(cijfer):
+    if cijfer == 1:
+        return ':::||'
+    if cijfer == 2:
+        return '::|:|'
+    if cijfer == 3:
+        return '::||:'
+    if cijfer == 4:
+        return ':|::|'
+    if cijfer == 5:
+        return ':|:|:'
+    if cijfer == 6:
+        return ':||::'
+    if cijfer == 7:
+        return '|:::|'
+    if cijfer == 8:
+        return '|::|:'
+    if cijfer == 9:
+        return '|:|::'
+    if cijfer == 0:
+        return '||:::'
+
+
+def postcode_naar_bar(postcode):
+    string1 = ''
+    for i in str(postcode):
+        string1 += f' {cijfer_naar_barcode(int(i))}'
+    string1 += f' {cijfer_naar_barcode(controlecijfer(postcode))}'
+    return string1[1:]  # deletes first space from string
+
+
+print(controlecijfer(82103))
+print(postcode_naar_bar(82103))
