@@ -13,14 +13,50 @@ Veronderstel het volgende bij het schrijven van de functie:
     gegeven lijst met waarden.
 """
 
+def examine(bedrag, munten, partial_solution):
+    if sum(partial_solution) == bedrag:
+        return 'Accept'
+    elif sum(partial_solution) > bedrag:
+        return 'Abandon'
+    else:
+        return 'Continue'
 
-def examine():
-    pass
+
+def extend(bedrag, munten, partial_solution):
+    partial_solutions = []
+    for i in munten:
+        partial_solutions.append(partial_solution + [i])
+    return partial_solutions
 
 
-def extend():
-    pass
+def solve(bedrag, munten, partial_solution=[]):
+    exam = examine(bedrag, munten, partial_solution)
+    if exam == 'Accept':
+        return [partial_solution]
+    elif exam != 'Abandon':
+        results = []
+        #print(extend(bedrag, munten, partial_solution))
+        for p in extend(bedrag, munten, partial_solution):
+            solutions = solve(bedrag, munten, p)
+            #print(solutions)
+            for i in solutions:
+                if sorted(i) not in results:
+                    results.append(sorted(i))
+            #print(results)
+        return results
+    return []
 
+def min_amount_of_coins(bedrag, munten):
+    lijst = solve(bedrag, munten)
+    minimum = (len(lijst[0]), lijst[0])
+    for i in lijst:
+        if len(i) < minimum[0]:
+            minimum = (len(i), i)
+    return minimum
 
-def solve():
-    pass
+print(min_amount_of_coins(15, [1, 2, 5, 10, 20, 50]))
+print(min_amount_of_coins(51, [1, 50]))
+assert min_amount_of_coins(51, [1, 50])[0] == 2
+assert min_amount_of_coins(23, [1, 2, 5, 10])[0] == 4
+assert min_amount_of_coins(80, [5, 20, 50])[0] == 4
+print(min_amount_of_coins(67, [1, 2, 5, 10, 20, 50]))

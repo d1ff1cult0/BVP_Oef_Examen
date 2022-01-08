@@ -19,12 +19,31 @@ wat er in de supermarkt gekocht kan worden, rekening houdende met het volgende:
 # De argumenten zijn reeds meegegeven bij de solve-functie om je op weg te zetten. Kies zelf nog wat je verwacht bij
 # examine en extend! Hulpfuncties definiëren kan ook nuttig zijn.
 
-def examine():
-    pass
+def examine(producten, verboden_producten, bedrag, lijstje):
+    som_lijst = 0
+    for i in lijstje:
+        som_lijst += producten[i]
+    koopbare_producten = list(producten.keys()-verboden_producten)
+    min_value = producten[koopbare_producten[0]]
+    for i in producten:
+        if i in koopbare_producten:
+            if producten[i] < min_value:
+                min_value = producten[i]
+
+    if som_lijst == bedrag or (som_lijst < bedrag < som_lijst + min_value):
+        return 'Accept'
+    if som_lijst < bedrag:
+        return 'Continue'
+    else:
+        return 'Abandon'
 
 
-def extend():
-    pass
+def extend(producten, verboden_producten, bedrag, lijstje):
+    pos_solutions = []
+    for i in producten:
+        if i not in verboden_producten:
+            pos_solutions.append(lijstje + [i])
+    return pos_solutions
 
 
 def solve(producten, verboden_producten, bedrag, lijstje=None):
@@ -34,7 +53,17 @@ def solve(producten, verboden_producten, bedrag, lijstje=None):
     # lege lijst in het lichaam van de functie zelf. Zo hebben we geen last van Pythons referentiesemantiek!
     if lijstje == None:
         lijstje = []  # De lege lijst die we hier aanmaken blijft enkel beschikbaar binnen déze oproep van de functie
-    pass
+    exam = examine(producten, verboden_producten, bedrag, lijstje)
+    if exam == 'Accept':
+        return [lijstje]
+    elif exam != 'Abandon':
+        results = []
+        for p in extend(producten, verboden_producten, bedrag, lijstje):
+            for i in solve(producten, verboden_producten, bedrag, p):
+                if sorted(i) not in results:
+                    results.append(sorted(i))
+        return results
+    return []
 
 
 # Voorbeeld dictionary met koopwaar en prijzen

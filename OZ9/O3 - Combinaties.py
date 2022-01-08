@@ -5,13 +5,36 @@ Gegeven twee integers n en k, geef alle mogelijke combinaties van k unieke getal
 """
 
 
-def examine():
-    pass
+def examine(n, k, partial_solution):
+    if len(set(partial_solution)) == len(partial_solution) == k:
+        return 'Accept'
+    elif len(partial_solution) != len(set(partial_solution)):
+        return 'Abandon'
+    else:
+        return 'Continue'
 
 
-def extend():
-    pass
+def extend(n, k, partial_solution):
+    partial_solutions = []
+    for i in range(1, n+1):
+        if i not in partial_solution:
+            partial_solutions.append(partial_solution + [i])
+    return partial_solutions
 
 
-def solve():
-    pass
+def solve(n, k, partial_solution=[]):
+    exam = examine(n, k, partial_solution)
+    if exam == 'Accept':
+        return [partial_solution]
+    elif exam != 'Abandon':
+        results = []
+        for p in extend(n, k, partial_solution):
+            if solve(n, k, p) is not None:
+                for res in solve(n, k, p):
+                    if sorted(res) not in results:
+                        results.append(res)
+        return results
+
+print(solve(4,2))
+
+
